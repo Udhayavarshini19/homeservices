@@ -5,8 +5,7 @@ include_once "./msg/login.php";
 
 <div class="container" style="margin-top: 50px; width: 450px;">
     <div class="card">
-        <img src="./images/login.jpg" style="height: 150px; width: 150px; margin-left: 130px" class="card-img-top"
-            alt="...">
+        
         <div class="card-body">
             <div class="card-title">
                 <h3 class="text-center">Login for Service Providers</h3>
@@ -27,7 +26,7 @@ include_once "./msg/login.php";
                     <input id="password" name="password" type="password" class="form-control"
                         placeholder="Enter Password" minlength="4" required>
                 </div>
-
+                <h5>Don't have an account ? <a href="register.php">REGISTER</h5>
                 <button style="margin-top: 30px;" class="btn btn-block btn-primary" type="submit" name="login"
                     id="login">Login</button>
             </form>

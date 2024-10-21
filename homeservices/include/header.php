@@ -23,7 +23,7 @@
         <?php if (!isset($_SESSION['user'])): ?>
          <a class="nav-link action " href="index.php">HOME</a>
         <a class="nav-link " href="findservice.php">Find Service Provider</a>
-        <a class="nav-link" href="register.php"> service provider</a>
+        <a class="nav-link" href="login.php"> service provider</a>
        
         <a class="nav-link" href="about.php">About</a>
         <a class="nav-link" href="user_dashboard.php">requester profile</a>

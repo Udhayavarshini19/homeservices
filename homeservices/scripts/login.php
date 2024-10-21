@@ -26,7 +26,7 @@ if (isset($_POST['login'])) {
 
         if (isset($provider)) {
             $_SESSION['user'] = $provider;
-            
+    
             $_SESSION['provider_id'] = $provider->id;
             header('Location: ../provider_dashboard.php');
             exit();

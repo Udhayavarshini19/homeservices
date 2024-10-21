@@ -82,14 +82,10 @@ include_once "msg/booking.php";
             <form action="scripts/bookhall.php" method="post">
                 <input type="hidden" name="provider" value="<?= htmlspecialchars($provider->id); ?>">
                 <div class="form-group">
-                    <label for="fname">First Name</label>
-                    <input id="fname" name="fname" type="text" class="form-control" placeholder="First Name" required>
+                    <label for="name"> Name</label>
+                    <input id="name" name="name" type="text" class="form-control" placeholder=" Name" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="lname">initials</label>
-                    <input id="lname" name="lname" type="text" class="form-control" placeholder="Last Name" required>
-                </div>
 
                 <div class="form-group">
                     <label for="contact">Contact No.</label>
@@ -104,7 +100,7 @@ include_once "msg/booking.php";
                 </div>
 
                 <div class="form-group">
-                    <label for="date">Date</label>
+                    <label for="date">Date on service needed</label>
                     <input class="form-control" type="date" name="date" id="date" required>
                 </div>
 

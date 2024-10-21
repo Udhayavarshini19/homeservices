@@ -26,14 +26,18 @@ CREATE TABLE reviews
     FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE
 );
 
-
+CREATE TABLE users (
+    id integer unsigned AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    contact VARCHAR(10) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
 CREATE TABLE bookings
 (
     id integer unsigned AUTO_INCREMENT PRIMARY KEY,
     provider_id integer unsigned NOT NULL,
-     user_id INT NOT NULL,
-    fname varchar(255) NOT NULL,
-    lname varchar(255) NOT NULL,
+    user_id integer unsigned NOT NULL,
+    name varchar(255) NOT NULL,
     contact varchar(20) NOT NULL,
     adder varchar(255) NOT NULL,
     date date NOT NULL,
@@ -42,12 +46,9 @@ CREATE TABLE bookings
     status ENUM('pending', 'accepted', 'denied', 'finished') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE,
-   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+
+    
 );
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    contact VARCHAR(10) NOT NULL,
-    password VARCHAR(255) NOT NULL
-);
+
 

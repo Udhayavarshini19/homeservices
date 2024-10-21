@@ -33,7 +33,7 @@
             <?php foreach ($bookings as $booking): ?>
             <tr>
                 <td>
-                    <?= $booking->fname; ?> <?= $booking->lname; ?>
+                    <?= $booking->name; ?> 
                 </td>
                 <td>
                     <?= $booking->contact; ?>

@@ -1,5 +1,22 @@
 <?php
+session_start();
+include_once './include/header.php';
 include_once "./scripts/DB.php";
+if (!isset($_SESSION['provider_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+$provider_id = $_SESSION['provider_id'];
+
+// Fetch provider information
+$provider = DB::query("SELECT * FROM providers WHERE id = ?", [$provider_id])->fetch(PDO::FETCH_OBJ);
+
+if (!$provider) {
+    echo "Provider not found.";
+    exit();
+}
+
 
 $provider_id = 1; // Example provider ID, replace with actual provider ID from session or login system
 

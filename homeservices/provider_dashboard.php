@@ -1,96 +1,113 @@
 <?php
 session_start();
-include_once "./include/header.php";
+include_once './include/header.php';
 include_once "./scripts/DB.php";
-
 if (!isset($_SESSION['provider_id'])) {
     header('Location: login.php');
     exit();
 }
 
-// Retrieve the logged-in provider's ID
-$providerId = $_SESSION['provider_id'];
+$provider_id = $_SESSION['provider_id'];
 
-// Fetch provider information based on the logged-in provider ID
-$provider = DB::query("SELECT * FROM providers WHERE id=?", [$providerId])->fetch(PDO::FETCH_OBJ);
+// Fetch provider information
+$provider = DB::query("SELECT * FROM providers WHERE id = ?", [$provider_id])->fetch(PDO::FETCH_OBJ);
 
-if ($provider === false) {
-    echo "<p>Provider details not found.</p>";
+if (!$provider) {
+    echo "Provider not found.";
     exit();
 }
 
-// Fetch bookings associated with this provider
-$bookings = DB::query("SELECT * FROM bookings WHERE provider_id=? ORDER BY status DESC, date DESC", [$providerId])->fetchAll(PDO::FETCH_OBJ);
 
+//$provider_id = 1; // Example provider ID, replace with actual provider ID from session or login system
+
+// Fetch pending and accepted bookings for the provider
+$bookings = DB::query("SELECT * FROM bookings WHERE provider_id = ? AND (status = 'pending' OR status = 'accepted')", [$provider_id]);
+
+// Fetch finished bookings for history
+$finishedBookings = DB::query("SELECT * FROM bookings WHERE provider_id = ? AND status = 'finished'", [$provider_id]);
+
+if ($bookings === null || $finishedBookings === null) {
+    echo "<p>Error retrieving bookings. Please try again later.</p>";
+    exit();
+}
 ?>
 
-<div class="container" style="margin-top: 30px;">
-    <div class="card text-center">
-        <div class="card-header">
-            <h3>Dashboard for <?= htmlspecialchars($provider->name); ?></h3>
-        </div>
-        <div class="container" style="margin-top: 30px;">
-            <div class="row">
-                <div class="col">
-                    <img style="height: 250px" src="images/<?= htmlspecialchars($provider->photo); ?>" alt="<?= htmlspecialchars($provider->name); ?>">
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <h2>Dashboard</h2>
 
-        <div class="card-body">
-            <table class="table">
+    <!-- Pending and Accepted Bookings -->
+    <h3>Pending and Accepted Bookings</h3>
+    <?php if ($bookings->rowCount() > 0): ?>
+        <table class="table">
+            <thead>
                 <tr>
-                    <th>Name</th>
-                    <td><?= htmlspecialchars($provider->name); ?></td>
-                    <th>Profession</th>
-                    <td><?= htmlspecialchars($provider->profession); ?></td>
-                </tr>
-                <tr>
+                    <th>Requester Name</th>
+                    <th>Requester Contact</th>
                     <th>Address</th>
-                    <td><?= htmlspecialchars($provider->adder1); ?>, <?= htmlspecialchars($provider->adder2); ?></td>
-                    <th>City</th>
-                    <td><?= htmlspecialchars($provider->city); ?></td>
+                    <th>Date</th>
+                    <th>Problem</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="container" style="margin-top: 30px;">
-    <h4>Bookings</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Booking ID</th>
-                <th>Customer Name</th>
-                <th>Address</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($bookings as $booking): ?>
-                <tr>
-                    <td><?= $booking->id; ?></td>
-                    <td><?= htmlspecialchars($booking->fname); ?></td>
-                    <td><?= htmlspecialchars($booking->adder); ?></td>
-                    <td><?= htmlspecialchars($booking->date); ?></td>
-                    <td><?= htmlspecialchars($booking->status); ?></td>
-                    <td>
-                        <?php if ($booking->status !== 'Completed'): ?>
-                            <form action="update_status.php" method="post">
+            </thead>
+            <tbody>
+                <?php while ($booking = $bookings->fetch(PDO::FETCH_OBJ)): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($booking->name); ?></td>
+                        <td><?= htmlspecialchars($booking->contact); ?></td>
+                        <td><?= htmlspecialchars($booking->adder); ?></td>
+                        <td><?= htmlspecialchars($booking->date); ?></td>
+                        <td><?= htmlspecialchars($booking->queries); ?></td>
+                        <td><?= htmlspecialchars($booking->status); ?></td>
+                        <td>
+                            <form method="POST" action="respond_booking.php" style="display: inline;">
                                 <input type="hidden" name="booking_id" value="<?= $booking->id; ?>">
-                                <input type="submit" name="mark_complete" value="Mark as Completed" class="btn btn-primary btn-sm">
+                                <?php if ($booking->status == 'pending'): ?>
+                                    <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+                                    <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
+                                <?php elseif ($booking->status == 'accepted'): ?>
+                                    <button type="submit" name="action" value="finish" class="btn btn-primary">Mark as Finished</button>
+                                <?php endif; ?>
                             </form>
-                        <?php else: ?>
-                            <span>Completed</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No pending or accepted bookings.</p>
+    <?php endif; ?>
 
-<?php include_once "include/footer.php"; ?>
+    <hr>
+
+    <!-- History of Finished Bookings -->
+    <h3>Service History</h3>
+    <?php if ($finishedBookings->rowCount() > 0): ?>
+        <table class="table">
+            <thead>
+                <tr>
+                   <th>Requester Contact</th>
+                    <th>Requester Contact</th>
+                    <th>Address</th>
+                    <th>Date</th>
+                    <th>Problem</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($booking = $finishedBookings->fetch(PDO::FETCH_OBJ)): ?>
+                    <tr>
+                    <td><?= htmlspecialchars($booking->name); ?></td>
+                        <td><?= htmlspecialchars($booking->contact); ?></td>
+                        <td><?= htmlspecialchars($booking->adder); ?></td>
+                        <td><?= htmlspecialchars($booking->date); ?></td>
+                        <td><?= htmlspecialchars($booking->queries); ?></td>
+                        <td><?= htmlspecialchars($booking->status); ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No finished bookings.</p>
+    <?php endif; ?>
+</div>

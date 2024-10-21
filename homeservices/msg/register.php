@@ -4,7 +4,7 @@
     <?php if ($_GET['msg'] == 'success'): ?>
     <div class="alert alert-success">
         <h4>Registering</h4>
-        <p>Service provider registered.</p>
+        <p>Service provider registered. please login to view profile</p>
     </div>
 
     <?php elseif ($_GET['msg'] == 'failed'): ?>

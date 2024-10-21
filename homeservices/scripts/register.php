@@ -30,7 +30,8 @@ if (isset($_POST['register'])) {
         ]);
 
     if ($isProviderCreated) {
-        header('Location: ../register.php?msg=success');
+        header('Location: ../login.php?msg=success');
+        
         exit();
     } else {
         unlink('../storage/'.$file1);
