@@ -21,12 +21,12 @@
 <body>
     <nav class="nav bg-dark">
         <?php if (!isset($_SESSION['user'])): ?>
-         <a class="nav-link action " href="index.php">HOME</a>
-        <a class="nav-link " href="findservice.php">Find Service Provider</a>
-        <a class="nav-link" href="login.php"> service provider</a>
+         <a class="nav-link action " href="index.php">Home</a>
+        <a class="nav-link " href="findservice.php">FindServiceProvider</a>
+        <a class="nav-link" href="login.php"> ServiceProvider</a>
        
         <a class="nav-link" href="about.php">About</a>
-        <a class="nav-link" href="user_dashboard.php">requester profile</a>
+        <a class="nav-link" href="user_dashboard.php">RequesterProfile</a>
 
         <?php elseif ($_SESSION['user']->name == 'admin'): ?>
         <a class="nav-link" href="managehall.php">Manage Providers</a>
