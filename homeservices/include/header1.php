@@ -20,7 +20,7 @@
 
 <body>
     <nav class="nav bg-dark">
-    <a class="nav-link" href="index.php">HOME</a>
+    <a class="nav-link" href="index.php">Home</a>
     <a class="nav-link" href="login.php">Login service provider</a>
     
     </nav>
